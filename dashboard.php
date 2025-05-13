@@ -1,9 +1,49 @@
 <?php
 session_start();
+require_once 'includes/config.php';
+
+$error = "";
+$quots = "";
 
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit();
+}
+
+if (isset($_POST['add'])) {
+    if (!empty($_POST["mood"]) || !empty($_POST["note"])) {
+        $user_id = $_SESSION['user_id'];
+        
+        $mood = htmlspecialchars($_POST["mood"]);
+        $note = htmlspecialchars($_POST["note"]);
+    
+        $sql = "INSERT INTO mood_history (user_id, mood, note, created_at) VALUES (:userid , :mood, :note , :created_at)";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([
+            ':userid' => $user_id,
+            ':mood' => $_POST["mood"],
+            ':note' => $_POST["note"],
+            ':created_at' => date("Y-m-d H:i:s")
+        ]);
+
+        $quote = file_get_contents("https://quotes-api-self.vercel.app/quote");
+        $quoteData = json_decode($quote, true);
+
+
+        if (isset($quoteData['quote']) && isset($quoteData['author'])) {
+            $quots = "<div class='quote-section'>
+                <div class='quote-content'>
+                    <p id='quote-text'>{$quoteData['quote']}</p>
+                    <small id='quote-author'>{$quoteData['author']}</small>
+                </div>
+            </div>";
+        } else {
+            $quots = "";
+        }
+
+    }else {
+        $error = "Please fill in all fields";
+    }
 }
 
 ?>
@@ -24,7 +64,7 @@ if (!isset($_SESSION['user_id'])) {
                 <h2>DailyMood</h2>
             </div>
             <ul class="menu-List">
-                <li>History</li>
+                <li><a href="history.php">History</a></li>
             </ul>
         </div>
     </header>
@@ -32,37 +72,36 @@ if (!isset($_SESSION['user_id'])) {
         <h1 id="bd_h">Track Your Daily Mood</h1>
         <p id="bd_p">Record how you feel each day and discover patterns in your emotional wellbeing</p>
 
-        <div class="form-section">
-            <div class="f_header">
-                <h3>How are you feeling today?</h3>
-                <p>Track your mood and add a note about your day</p>
+        <form action="" method="post">
+            <div class="form-section">
+                <div class="f_header">
+                    <h3>How are you feeling today?</h3>
+                    <p>Track your mood and add a note about your day</p>
+                </div>
+                <div class="f_selection">
+                    <h4>Select your mood</h4>
+                    <select name="mood" id="mood" required>
+                        <option value="">Choose your mood...</option>
+                        <option value="Amazing">Amazing 😄</option>
+                        <option value="Good">Good 🙂</option>
+                        <option value="Okay">Okay 😐</option>
+                        <option value="Meh">Meh 😕</option>
+                        <option value="Bad">Bad 😞</option>
+                        <option value="Terrible">Terrible 😫</option>
+                    </select>
+                </div>
+                <div class="f_note">
+                    <h4>Add a note</h4>
+                    <textarea name="note" id="note" placeholder="What made you feel this way today?" required></textarea>
+    
+                    </textarea>
+                </div>
+                <p style="color:red;"><?= $error ?></p>
+                <button type="submit" class="btn btn-primary" name="add">Save Today's Mood</button>
             </div>
-            <div class="f_selection">
-                <h4>Select your mood</h4>
-                <select name="mood" id="mood">
-                    <option value="amazing">Amazing 😄</option>
-                    <option value="good">Good 🙂</option>
-                    <option value="okay">Okay 😐</option>
-                    <option value="meh">Meh 😕</option>
-                    <option value="bad">Bad 😞</option>
-                    <option value="terrible">Terrible 😫</option>
-                </Select>
-            </div>
-            <div class="f_note">
-                <h4>Add a note (optional)</h4>
-                <textarea name="note" id="note" placeholder="What made you feel this way today?" ></textarea>
+            <?= $quots?>
+        </form>
 
-                </textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Save Today's Mood</button>
-        </div>
-
-        <div class="quote-section">
-            <div class="quote-content">
-                <p id="quote-text">"Your emotions are the slaves to your thoughts, and you are the slave to your emotions."</p>
-                <small id="quote-author">DIPLO SPY</small>
-            </div>
-        </div>
     </div>
     <footer class="footer">
     <div class="footer-content">
