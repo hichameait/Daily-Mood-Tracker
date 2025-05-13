@@ -433,3 +433,75 @@ header {
         font-size: 0.875rem;
     }
 }
+
+.history-section {
+    width: 100%;
+    max-width: 800px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.mood-card {
+    background-color: #fff;
+    border: 1px solid #889ec8;
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+}
+
+.mood-card:hover {
+    transform: translateY(-2px);
+}
+
+.mood-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.mood-emoji {
+    font-size: 1.5rem;
+}
+
+.mood-date {
+    color: #718096;
+    font-size: 0.875rem;
+}
+
+.mood-note {
+    color: #4a5568;
+    line-height: 1.6;
+}
+
+.no-moods {
+    text-align: center;
+    padding: 3rem;
+    background: #fff;
+    border-radius: 10px;
+    border: 1px solid #889ec8;
+    color: #718096;
+}
+
+/* Responsive adjustments for history page */
+@media (max-width: 768px) {
+    .history-section {
+        width: 95%;
+    }
+    
+    .mood-card {
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .mood-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+}
