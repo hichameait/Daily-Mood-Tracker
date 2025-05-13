@@ -1,3 +1,12 @@
+<?php
+session_start();
+
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit();
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -15,10 +24,7 @@
                 <h2>DailyMood</h2>
             </div>
             <ul class="menu-List">
-                <li>Dashboard</li>
                 <li>History</li>
-                <li>Insights</li>
-                <li>Settings</li>
             </ul>
         </div>
     </header>
@@ -28,11 +34,11 @@
 
         <div class="form-section">
             <div class="f_header">
-                <h2>How are you feeling today?</h2>
+                <h3>How are you feeling today?</h3>
                 <p>Track your mood and add a note about your day</p>
             </div>
             <div class="f_selection">
-                <h2>Select your mood</h2>
+                <h4>Select your mood</h4>
                 <select name="mood" id="mood">
                     <option value="amazing">Amazing 😄</option>
                     <option value="good">Good 🙂</option>
@@ -43,13 +49,14 @@
                 </Select>
             </div>
             <div class="f_note">
-                <h2>Add a note (optional)</h2>
+                <h4>Add a note (optional)</h4>
                 <textarea name="note" id="note" placeholder="What made you feel this way today?" ></textarea>
 
                 </textarea>
             </div>
+            <button type="submit" class="btn btn-primary">Save Today's Mood</button>
         </div>
-        
+
         <div class="quote-section">
             <div class="quote-content">
                 <p id="quote-text">"Your emotions are the slaves to your thoughts, and you are the slave to your emotions."</p>
