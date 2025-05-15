@@ -41,6 +41,36 @@ if (isset($_POST['add'])) {
             $quots = "";
         }
 
+        // $data = [
+        //     'user_id' => $_SESSION['user_email'],
+        //     'mood' => $_POST["mood"],
+        //     'note' => $_POST["note"],
+        //     'quote' => $quoteData['quote'],
+        //     'author' => $quoteData['author']
+        // ];
+        
+        $data = [
+            "data" => [
+                'user_id' => $_SESSION['user_email'],
+                'mood' => $_POST["mood"],
+                'note' => $_POST["note"],
+                'quote' => $quoteData['quote'],
+                'author' => $quoteData['author']
+            ]
+        ];
+        
+        // Webhook URL dyal n8n
+        $webhook_url = "https://hook.eu2.make.com/4mefvodjsa2e5jrgtanfvxtbv0qkbbx5";
+        
+        $ch = curl_init($webhook_url);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        
+        $response = curl_exec($ch);
+        curl_close($ch);
+        
     }else {
         $error = "Please fill in all fields";
     }
